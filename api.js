@@ -1,7 +1,8 @@
 
-
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, doc, getDoc, query, where } from "firebase/firestore/lite"
+
 const firebaseConfig = {
   apiKey: "AIzaSyDT3nvh_jIw8Z-iLUboQbtFHv7FwWhczWE",
   authDomain: "van-life-afa5a.firebaseapp.com",
@@ -12,8 +13,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app)
 const db = getFirestore(app)
 
 const vansCollectionRef = collection(db, "vans")
@@ -59,18 +60,30 @@ export async function getHostVan(id) {
 
 
 export async function loginUser(creds) {
-    const res = await fetch("/api/login",
-        { method: "post", body: JSON.stringify(creds) }
-    )
-    const data = await res.json()
+    
+    const res = await signInWithEmailAndPassword(auth, creds.email, creds.password)
+    
+    const data = await singIn.user
 
-    if (!res.ok) {
-        throw {
-            message: data.message,
-            statusText: res.statusText,
-            status: res.status
-        }
-    }
+    
 
     return data
+
 }
+
+// export async function loginUser(creds) {
+//     const res = await fetch("/api/login",
+//         { method: "post", body: JSON.stringify(creds) }
+//     )
+//     const data = await res.json()
+
+//     if (!res.ok) {
+//         throw {
+//             message: data.message,
+//             statusText: res.statusText,
+//             status: res.status
+//         }
+//     }
+
+//     return data
+// }
